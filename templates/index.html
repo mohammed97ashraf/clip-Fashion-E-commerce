@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Website</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .navbar {
+      background-color: #343a40 !important;
+    }
+    .navbar-brand {
+      font-size: 24px;
+    }
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      font-size: 18px;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #ffc107 !important;
+    }
+    .custom-file-input:focus ~ .custom-file-label {
+      border-color: #ffc107;
+    }
+    .input-group-append .btn {
+      background-color: #ffc107;
+      color: #343a40;
+    }
+    .input-group-append .btn:hover {
+      background-color: #ffca2b;
+    }
+    .img-thumbnail {
+      border: 2px solid #ffc107;
+      width: 100%; /* Set width to 100% */
+      height: auto; /* Maintain aspect ratio */
+    }
+    .product-description {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .col-md-3 {
+      flex: 0 0 auto;
+      width: auto;
+    }
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .img-thumbnail {
+        border: 2px solid #ffc107;
+        width: 100%; /* Set width to 100% */
+        height: 300px; /* Set a fixed height for all images */
+      }
+    .img-search-thumbnail {
+        border: 2px solid #ffc107;
+        width: 100%; /* Set width to 100% */
+        height: 200px; /* Set a fixed height for all images */
+      }
+  </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">E-commerce</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Products</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Contact</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="container mt-3">
+  <div class="input-group">
+    <div class="custom-file">
+      <input type="file" class="custom-file-input" id="inputGroupFile04" accept="image/*">
+      <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+    </div>
+    <input type="text" class="form-control" id="searchText" placeholder="Search for products...">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button" onclick="searchProducts()">Search</button>
+    </div>
+  </div>
+</div>
+
+<!-- Search Results -->
+<div class="container mt-5" id="searchResults">
+  <!-- Search results will be displayed here -->
+</div>
+
+<!-- Sample Product Images -->
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-md-3">
+        <img src="https://dressland.co.in/wp-content/uploads/2022/09/photo-1617137968427-85924c800a22.jpeg" class="img-thumbnail" alt="Sample Product Image">
+        <p class="product-description">Product 1</p>
+      </div>
+      <div class="col-md-3">
+        <img src="https://www.beatitude.in/cdn/shop/articles/DSC_2173_720x_dec1d27e-c2a7-4ce7-8b21-654c0ca12e43_1024x.webp?v=1675162397" class="img-thumbnail" alt="Sample Product Image">
+        <p class="product-description">Product 2</p>
+      </div>
+      <div class="col-md-3">
+        <img src="https://media.fashionnetwork.com/cdn-cgi/image/fit=contain,width=1000,height=1000/m/4176/0fbf/b24f/73dd/3212/0b5a/67fc/8e81/661e/ce5b/ce5b.jpeg" class="img-thumbnail" alt="Sample Product Image">
+        <p class="product-description">Product 3</p>
+      </div>
+      <div class="col-md-3">
+        <img src="https://cdn4.ethoswatches.com/the-watch-guide/wp-content/uploads/2020/10/Masthead-Mobile@2x-3.jpg" class="img-thumbnail" alt="Sample Product Image">
+        <p class="product-description">Product 4</p>
+      </div>
+    </div>
+  </div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  function searchProducts() {
+    var searchText = $('#searchText').val();
+    $.ajax({
+      url: '/text_search', // Flask endpoint URL
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ text: searchText }),
+      success: function(response) {
+        displaySearchResults(response);
+      },
+      error: function(xhr, status, error) {
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  function displaySearchResults(results) {
+    var searchResultsDiv = $('#searchResults');
+    searchResultsDiv.empty(); // Clear previous search results
+
+    results.forEach(function(result) {
+      var productDiv = $('<div class="col-md-3">');
+      var imgElement = $('<img class="img-search-thumbnail">').attr('src', 'data:image/jpeg;base64,' + result.image);
+      var descriptionElement = $('<p class="product-description">').text(result.name);
+      productDiv.append(imgElement, descriptionElement);
+      searchResultsDiv.append(productDiv);
+    });
+  }
+</script>
+
+</body>
+</html>
